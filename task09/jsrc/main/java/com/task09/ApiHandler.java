@@ -77,10 +77,11 @@ public class ApiHandler implements RequestHandler<APIGatewayV2HTTPEvent, APIGate
 
 		// Return bad request response for any unsupported path/method
 		return APIGatewayV2HTTPResponse.builder()
-				.withStatusCode(400)
-				.withBody("{\"message\":\"Bad request syntax or unsupported method. Request path: " + path + ". HTTP method: " + method + "\"}")
+				.withStatusCode(400) // API Gateway needs this field
+				.withBody("{\"statusCode\": 400, \"message\": \"Bad request syntax or unsupported method. Request path: " + path + ". HTTP method: " + method + "\"}")
 				.withHeaders(Map.of("Content-Type", "application/json"))
 				.build();
+
 	}
 
 }
