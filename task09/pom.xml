@@ -50,7 +50,7 @@
         <!--OpenMeteo dependencies-->
         <dependency>
             <groupId>com.openmeteo</groupId>
-            <artifactId>openmeteo-client</artifactId>
+            <artifactId>open-meteo-layer</artifactId>
             <version>1.0.0</version>
             <scope>system</scope>
             <systemPath>${basedir}/lib/open-meteo-layer.jar</systemPath>

@@ -56,24 +56,16 @@ public class ApiHandler implements RequestHandler<APIGatewayV2HTTPEvent, APIGate
 
 	@Override
 	public APIGatewayV2HTTPResponse handleRequest(APIGatewayV2HTTPEvent requestEvent, Context context) {
-		APIGatewayV2HTTPEvent.RequestContext requestContext = new APIGatewayV2HTTPEvent.RequestContext();
-		APIGatewayV2HTTPEvent.RequestContext.Http http = new APIGatewayV2HTTPEvent.RequestContext.Http();
-
-		http.setMethod("GET");
-		http.setPath("/weather");
-
-		requestContext.setHttp(http);
-		requestEvent.setRequestContext(requestContext);
-
+		// Extract actual method and path from the incoming request
 		String method = requestEvent.getRequestContext().getHttp().getMethod();
-		String path = requestEvent.getRequestContext().getHttp().getPath();
+		context.getLogger().log("Received method: " + method);
+		String path = requestEvent.getRawPath(); // Use getRawPath() to get the actual request path
 
 		if ("/weather".equals(path) && "GET".equalsIgnoreCase(method)) {
 			// Fetch weather data
 			String weatherData = api.fetchWeatherData();
 
 			if (weatherData != null) {
-
 				// Return successful response
 				return APIGatewayV2HTTPResponse.builder()
 						.withStatusCode(200)
@@ -81,21 +73,14 @@ public class ApiHandler implements RequestHandler<APIGatewayV2HTTPEvent, APIGate
 						.withHeaders(Map.of("Content-Type", "application/json"))
 						.build();
 			}
-			// Return bad request response
-			return APIGatewayV2HTTPResponse.builder()
-					.withStatusCode(400)
-					.withBody("{\"message\":\"Bad request syntax or unsupported method. Request path: " + path + ". HTTP method: " + method + "\"}")
-					.withHeaders(Map.of("Content-Type", "application/json"))
-					.build();
-
 		}
-		// Return bad request response
+
+		// Return bad request response for any unsupported path/method
 		return APIGatewayV2HTTPResponse.builder()
 				.withStatusCode(400)
 				.withBody("{\"message\":\"Bad request syntax or unsupported method. Request path: " + path + ". HTTP method: " + method + "\"}")
 				.withHeaders(Map.of("Content-Type", "application/json"))
 				.build();
-
 	}
 
 }
